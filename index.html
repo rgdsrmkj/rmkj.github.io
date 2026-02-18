@@ -350,14 +350,6 @@
             }
         }
 
-        // 注册功能
-        function register() {
-            const username = document.getElementById('register-username').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
-            const errorDiv = document.getElementById('register-error');
-            const messageDiv = document.getElementById('register-message');
-
             // 验证输入
             if (!username || !password) {
                 errorDiv.textContent = '用户名和密码不能为空';
@@ -643,4 +635,5 @@
         };
     </script>
 </body>
+
 </html>
