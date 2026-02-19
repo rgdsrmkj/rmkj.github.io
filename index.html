@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -226,14 +226,21 @@
             grid-template-columns: repeat(8, 1fr);
         }
 
-        .tier-t05 .member-slot,
+        /* 修改：新晋t0.5的成员卡片和名字大小与t0梯队一致 */
+        .tier-t05 .member-slot {
+            min-height: 80px;
+            padding: 15px;
+        }
+        .tier-t05 .member-name {
+            font-size: 1.2rem;
+        }
+
+        /* 其他梯队保持原有样式 */
         .tier-tech-king .member-slot,
         .tier-inner-god .member-slot {
             min-height: 60px;
             padding: 12px;
         }
-
-        .tier-t05 .member-name,
         .tier-tech-king .member-name,
         .tier-inner-god .member-name {
             font-size: 0.9rem;
