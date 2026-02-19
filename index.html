@@ -3,637 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>如门科技管理系统</title>
+    <title>明星房个人实力榜</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        * {
+        :root {
+            --deep-space: #050510;
+            --hologram-blue: #00F9FF;
+            --hologram-pink: #FF00F5;
+            --hologram-purple: #9D00FF;
+            --glow-intensity: 0.7;
+        }
+
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: var(--deep-space);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
         }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin: 0;
+            background: linear-gradient(90deg, var(--hologram-blue), var(--hologram-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(0, 249, 255, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--hologram-blue), var(--hologram-pink));
+            box-shadow: 0 0 10px var(--hologram-blue);
+        }
+
+        .timestamp {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--hologram-blue);
+            font-size: 1.2rem;
+            margin-top: 10px;
+            text-shadow: 0 0 10px var(--hologram-blue);
+        }
+
+        .tier {
+            margin-bottom: 30px;
+            position: relative;
+            background: rgba(5, 5, 16, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 30px rgba(0, 249, 255, 0.1);
+            border: 1px solid rgba(0, 249, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .tier-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .tier-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin: 0;
+            color: var(--hologram-blue);
+            text-shadow: 0 0 8px var(--hologram-blue);
+        }
+
+        .tier-count {
+            background-color: rgba(0, 249, 255, 0.1);
+            color: var(--hologram-blue);
+            border: 1px solid var(--hologram-blue);
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 0.9rem;
+            margin-left: 15px;
+            box-shadow: 0 0 10px rgba(0, 249, 255, 0.2);
+        }
+
+        .tier-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--hologram-blue));
+            margin: 15px 0;
+            opacity: 0.7;
+            box-shadow: 0 0 10px var(--hologram-blue);
+        }
+
+        .members-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .member-slot {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 249, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 249, 255, 0.1);
+        }
+
+        .member-slot::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, var(--hologram-blue), var(--hologram-purple), var(--hologram-blue));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .member-slot:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 249, 255, 0.3);
+            background: rgba(0, 249, 255, 0.05);
+        }
+
+        .member-slot:hover::before {
+            opacity: 0.3;
+        }
+
+        .member-name {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: white;
+            font-weight: 500;
+            text-shadow: 0 0 5px rgba(0, 249, 255, 0.5);
+        }
+
+        .member-rank {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 0.8rem;
+            color: var(--hologram-blue);
+            opacity: 0.7;
+        }
+
+        /* 老T0 样式 */
+        .tier-founder {
+            margin-bottom: 40px;
+        }
+
+        .tier-founder .tier-title {
+            font-size: 2.2rem;
+            color: var(--hologram-purple);
+            text-shadow: 0 0 15px var(--hologram-purple);
+        }
+
+        .tier-founder .tier-count {
+            background-color: rgba(157, 0, 255, 0.1);
+            border-color: var(--hologram-purple);
+            color: var(--hologram-purple);
+        }
+
+        /* 老T0 统一用 5列网格 */
+        .tier-founder .members-grid {
+            grid-template-columns: repeat(5, 1fr);
+            display: grid !important;
+        }
+        .tier-founder .member-slot {
+            min-height: 80px;
+            display: block !important;
+        }
+        .tier-founder .member-name {
+            font-size: 1.2rem;
+        }
+
+        /* 隐藏原来的大卡片 */
+        .founder-card {
+            display: none !important;
+        }
+
+        /* T0精英样式 */
+        .tier-t0 .members-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .tier-t0 .member-slot {
+            min-height: 80px;
+        }
+
+        .tier-t0 .member-name {
+            font-size: 1.2rem;
+        }
+
+        /* T0.5及以下统一样式 */
+        .tier-t05 .members-grid,
+        .tier-tech-king .members-grid,
+        .tier-inner-god .members-grid {
+            grid-template-columns: repeat(8, 1fr);
+        }
+
+        .tier-t05 .member-slot,
+        .tier-tech-king .member-slot,
+        .tier-inner-god .member-slot {
+            min-height: 60px;
+            padding: 12px;
+        }
+
+        .tier-t05 .member-name,
+        .tier-tech-king .member-name,
+        .tier-inner-god .member-name {
+            font-size: 0.9rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1600px) {
+            .tier-t05 .members-grid,
+            .tier-tech-king .members-grid,
+            .tier-inner-god .members-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .tier-founder .members-grid,
+            .tier-t0 .members-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .tier-t05 .members-grid,
+            .tier-tech-king .members-grid,
+            .tier-inner-god .members-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .tier-founder .members-grid,
+            .tier-t0 .members-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .tier-t05 .members-grid,
+            .tier-tech-king .members-grid,
+            .tier-inner-god .members-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tier-founder .members-grid,
+            .tier-t0 .members-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .tier-t05 .members-grid,
+            .tier-tech-king .members-grid,
+            .tier-inner-god .members-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .tier-t05 .members-grid,
+            .tier-tech-king .members-grid,
+            .tier-inner-god .members-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #666;
-        }
-        input[type="text"],
-        input[type="password"],
-        input[type="number"],
-        input[type="date"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .error {
-            color: red;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .success {
-            color: green;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .dashboard {
-            max-width: 600px;
-        }
-        .dashboard h3 {
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-        .info-item {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        .info-item span {
-            font-weight: bold;
-        }
-        .logout {
-            background-color: #f44336;
-            margin-top: 20px;
-        }
-        .logout:hover {
-            background-color: #da190b;
-        }
-        .employee-search {
-            background-color: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .current-employee {
-            background-color: #e3f2fd;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .register-link {
-            text-align: center;
+            gap: 20px;
             margin-top: 15px;
         }
-        .register-link a {
-            color: #4CAF50;
+
+        .footer-link {
+            color: var(--hologram-blue);
             text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
-        .register-link a:hover {
-            text-decoration: underline;
+
+        .footer-link:hover {
+            color: var(--hologram-pink);
+            text-shadow: 0 0 10px var(--hologram-pink);
         }
-        .registration-requests {
-            background-color: #f0f0f0;
-            padding: 15px;
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 249, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--hologram-blue);
             border-radius: 4px;
-            margin-bottom: 20px;
         }
-        .request-item {
-            background-color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            border-left: 4px solid #ff9800;
-        }
-        .request-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        .approve-btn {
-            flex: 1;
-            background-color: #4CAF50;
-        }
-        .reject-btn {
-            flex: 1;
-            background-color: #f44336;
-        }
-        .tab-container {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        .tab {
-            padding: 10px;
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-        }
-        .tab.active {
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 4px 4px 0 0;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--hologram-purple);
         }
     </style>
 </head>
 <body>
-    <div class="container" id="login-container">
-        <h2>工作室工资管理系统</h2>
-        <div class="tab-container">
-            <div class="tab active" onclick="switchTab('login-tab')">登录</div>
-            <div class="tab" onclick="switchTab('register-tab')">注册</div>
+    <div class="container">
+        <div class="header">
+            <h1>明星房个人实力榜</h1>
+            <div class="timestamp">最后更新: <span id="current-time"></span></div>
         </div>
         
-        <div id="login-tab" class="tab-content active">
-            <div class="form-group">
-                <label for="username">用户名</label>
-                <input type="text" id="username" placeholder="请输入用户名">
+        <!-- 老T0 -->
+        <div class="tier tier-founder">
+            <div class="tier-header">
+                <h2 class="tier-title">内圈T0</h2>
+                <span class="tier-count">7位</span>
             </div>
-            <div class="form-group">
-                <label for="password">密码</label>
-                <input type="password" id="password" placeholder="请输入密码">
+            <div class="tier-divider"></div>
+            
+            <div class="members-grid">
+                <div class="member-slot"><div class="member-rank">#1</div><div class="member-name">灰色</div></div>
+                <div class="member-slot"><div class="member-rank">#2</div><div class="member-name">李泽润</div></div>
+                <div class="member-slot"><div class="member-rank">#3</div><div class="member-name"> 伽</div></div>
+                <div class="member-slot"><div class="member-rank">#4</div><div class="member-name">法老鹤</div></div>
+                <div class="member-slot"><div class="member-rank">#5</div><div class="member-name">索然</div></div>
+                 <div class="member-slot"><div class="member-rank">#6</div><div class="member-name">路小北</div></div> 
+                  <div class="member-slot"><div class="member-rank">#7</div><div class="member-name">高宇</div></div>
             </div>
-            <button onclick="login()">登录</button>
-            <div id="login-error" class="error"></div>
         </div>
         
-        <div id="register-tab" class="tab-content">
-            <div class="form-group">
-                <label for="register-username">用户名</label>
-                <input type="text" id="register-username" placeholder="请输入用户名">
+        <!-- 公会高管 -->
+        <div class="tier tier-t0">
+            <div class="tier-header">
+                <h2 class="tier-title">t0.5</h2>
+                <span class="tier-count">17位</span>
             </div>
-            <div class="form-group">
-                <label for="register-password">密码</label>
-                <input type="password" id="register-password" placeholder="请输入密码">
+            <div class="tier-divider"></div>
+            <div class="members-grid">
+                <div class="member-slot"><div class="member-rank">#1</div><div class="member-name">赫然</div></div>
+                <div class="member-slot"><div class="member-rank">#2</div><div class="member-name">可神</div></div>
+                <div class="member-slot"><div class="member-rank">#3</div><div class="member-name">九命猫</div></div>
+                <div class="member-slot"><div class="member-rank">#4</div><div class="member-name">O泡神</div></div>
+                <div class="member-slot"><div class="member-rank">#5</div><div class="member-name">录帝</div></div>
+                 <div class="member-slot"><div class="member-rank">#6</div><div class="member-name">心愿</div></div>
+                 <div class="member-slot"><div class="member-rank">#7</div><div class="member-name">沈伊</div></div>
+                  <div class="member-slot"><div class="member-rank">#8</div><div class="member-name">什么姜</div></div>
+                   <div class="member-slot"><div class="member-rank">#9</div><div class="member-name"> 真名有源</div></div>
+                    <div class="member-slot"><div class="member-rank">#10</div><div class="member-name">死尸</div></div>
+                     <div class="member-slot"><div class="member-rank">#11</div><div class="member-name">师范</div></div>
+                      <div class="member-slot"><div class="member-rank">#12</div><div class="member-name">李宇轩</div></div>
+                       <div class="member-slot"><div class="member-rank">#13</div><div class="member-name">小只芸</div></div>
+                        <div class="member-slot"><div class="member-rank">#14</div><div class="member-name">呆小淇</div></div>
+                         <div class="member-slot"><div class="member-rank">#15</div><div class="member-name">敢</div></div>
+                          <div class="member-slot"><div class="member-rank">#16</div><div class="member-name">小三岁</div></div>
+                           <div class="member-slot"><div class="member-rank">#17</div><div class="member-name">真名有权</div></div>
             </div>
-            <div class="form-group">
-                <label for="register-confirm-password">确认密码</label>
-                <input type="password" id="register-confirm-password" placeholder="请确认密码">
+        </div>
+        
+        <!-- 公会突出成员 -->
+        <div class="tier tier-t05">
+            <div class="tier-header">
+                <h2 class="tier-title">新晋t0.5</h2>
+                <span class="tier-count">5位</span>
             </div>
-            <button onclick="register()">注册</button>
-            <div id="register-message" class="success"></div>
-            <div id="register-error" class="error"></div>
+            <div class="tier-divider"></div>
+            <div class="members-grid">
+                <div class="member-slot"><div class="member-rank">路明非</div><div class="member-name"></div></div>
+                <div class="member-slot"><div class="member-rank">词王</div><div class="member-name"></div></div>
+                <div class="member-slot"><div class="member-rank">晦涩</div><div class="member-name"></div></div>
+                <div class="member-slot"><div class="member-rank">孩子王</div><div class="member-name"></div></div>
+                <div class="member-slot"><div class="member-rank">慕小羽</div><div class="member-name"></div></div>
+            </div>
+        </div>
+        
+        <!-- 公会内t0.5 -->
+        <div class="tier tier-tech-king">
+            <div class="tier-header">
+                <h2 class="tier-title">老超一线</h2>
+                <span class="tier-count">48位</span>
+            </div>
+            <div class="tier-divider"></div>
+            <div class="members-grid">
+                <div class="member-slot"><div class="member-name">冰刀</div></div>
+                <div class="member-slot"><div class="member-name">小宇神</div></div>
+                <div class="member-slot"><div class="member-name">尸疤</div></div>
+                <div class="member-slot"><div class="member-name">亚当</div></div>
+                <div class="member-slot"><div class="member-name">眠（IP江苏）</div></div>
+                <div class="member-slot"><div class="member-name">泪誓</div></div>
+                <div class="member-slot"><div class="member-name">y</div></div>
+                <div class="member-slot"><div class="member-name">雨夜难眠</div></div>
+                <div class="member-slot"><div class="member-name">莹yin</div></div>
+                <div class="member-slot"><div class="member-name">小渝</div></div>
+                <div class="member-slot"><div class="member-name">不堪</div></div>
+                <div class="member-slot"><div class="member-name">阴天（彼岸）</div></div>
+                <div class="member-slot"><div class="member-name">薄荷</div></div>
+                <div class="member-slot"><div class="member-name">恶名</div></div>
+                <div class="member-slot"><div class="member-name">温雪</div></div>
+                <div class="member-slot"><div class="member-name">白浅</div></div>
+                <div class="member-slot"><div class="member-name">凌冬</div></div>
+                <div class="member-slot"><div class="member-name">伦</div></div>
+                <div class="member-slot"><div class="member-name">蛊</div></div>
+                <div class="member-slot"><div class="member-name">垂耳兔</div></div>
+                <div class="member-slot"><div class="member-name">灰烬</div></div>
+                <div class="member-slot"><div class="member-name">北</div></div>
+                <div class="member-slot"><div class="member-name">林小萌</div></div>
+                <div class="member-slot"><div class="member-name">批判</div></div>
+                <div class="member-slot"><div class="member-name">泪点</div></div>
+                <div class="member-slot"><div class="member-name">续冬</div></div>
+                <div class="member-slot"><div class="member-name">少爷（IP贵州）</div></div>
+                <div class="member-slot"><div class="member-name">原罪</div></div>
+                <div class="member-slot"><div class="member-name">徐意</div></div>
+                <div class="member-slot"><div class="member-name">南京锁</div></div>
+                <div class="member-slot"><div class="member-name">幻想</div></div>
+                <div class="member-slot"><div class="member-name">破碎</div></div>
+                <div class="member-slot"><div class="member-name">茉莉</div></div>
+                <div class="member-slot"><div class="member-name">天真作词</div></div>
+                <div class="member-slot"><div class="member-name">刻意</div></div>
+                <div class="member-slot"><div class="member-name">回忆旧片</div></div>
+                <div class="member-slot"><div class="member-name">许喃</div></div>
+                <div class="member-slot"><div class="member-name">兔耳萌</div></div>
+                <div class="member-slot"><div class="member-name">搁浅</div></div>
+                <div class="member-slot"><div class="member-name">宇天</div></div>
+                <div class="member-slot"><div class="member-name">怮</div></div>
+                <div class="member-slot"><div class="member-name">暗限</div></div>
+                <div class="member-slot"><div class="member-name">冰封</div></div>
+                <div class="member-slot"><div class="member-name">前任</div></div>
+                <div class="member-slot"><div class="member-name">初念</div></div>
+                <div class="member-slot"><div class="member-name">宋彤彤</div></div>
+                <div class="member-slot"><div class="member-name">彤彤</div></div>
+                <div class="member-slot"><div class="member-name">珊king</div></div>
+            </div>
+        </div>
+        
+        <!-- 公会内超一线 -->
+        <div class="tier tier-inner-god">
+            <div class="tier-header">
+                <h2 class="tier-title">新超一线</h2>
+                <span class="tier-count">66位</span>
+            </div>
+            <div class="tier-divider"></div>
+            <div class="members-grid">
+                <div class="member-slot"><div class="member-name">小y</div></div>
+                <div class="member-slot"><div class="member-name">芯</div></div>
+                <div class="member-slot"><div class="member-name">如旧</div></div>
+                <div class="member-slot"><div class="member-name">回忆</div></div>
+                <div class="member-slot"><div class="member-name">萌萌怡</div></div>
+                <div class="member-slot"><div class="member-name">绯恋</div></div>
+                <div class="member-slot"><div class="member-name">旧曲</div></div>
+                <div class="member-slot"><div class="member-name">署名</div></div>
+                <div class="member-slot"><div class="member-name">清由</div></div>
+                <div class="member-slot"><div class="member-name">天真名</div></div>
+                <div class="member-slot"><div class="member-name">决绝（IP云南）</div></div>
+                <div class="member-slot"><div class="member-name">降雪</div></div>
+                <div class="member-slot"><div class="member-name">娇king</div></div>
+                <div class="member-slot"><div class="member-name">痛郁</div></div>
+                <div class="member-slot"><div class="member-name">配角</div></div>
+                <div class="member-slot"><div class="member-name">赐名为音</div></div>
+                <div class="member-slot"><div class="member-name">璇子</div></div>
+                <div class="member-slot"><div class="member-name">小仪</div></div>
+                <div class="member-slot"><div class="member-name">念初</div></div>
+                <div class="member-slot"><div class="member-name">131</div></div>
+                <div class="member-slot"><div class="member-name">林佳佳</div></div>
+                <div class="member-slot"><div class="member-name">祈愿</div></div>
+                <div class="member-slot"><div class="member-name">刀口</div></div>
+                <div class="member-slot"><div class="member-name">小音</div></div>
+                <div class="member-slot"><div class="member-name">呆呆诗</div></div>
+                <div class="member-slot"><div class="member-name">陈怡</div></div>
+                <div class="member-slot"><div class="member-name">琳</div></div>
+                <div class="member-slot"><div class="member-name">天赋</div></div>
+                <div class="member-slot"><div class="member-name">扬</div></div>
+                <div class="member-slot"><div class="member-name">曲小曲</div></div>
+                <div class="member-slot"><div class="member-name">上好佳</div></div>
+                <div class="member-slot"><div class="member-name">许允</div></div>
+                <div class="member-slot"><div class="member-name">雨雨</div></div>
+                <div class="member-slot"><div class="member-name">芦荟</div></div>
+                <div class="member-slot"><div class="member-name">女将</div></div>
+                <div class="member-slot"><div class="member-name">花神</div></div>
+                <div class="member-slot"><div class="member-name">刻痕</div></div>
+                <div class="member-slot"><div class="member-name">茹記</div></div>
+                <div class="member-slot"><div class="member-name">陈婳</div></div>
+                <div class="member-slot"><div class="member-name">刺白</div></div>
+                <div class="member-slot"><div class="member-name">幼涵</div></div>
+                <div class="member-slot"><div class="member-name">唏king</div></div>
+                <div class="member-slot"><div class="member-name">取悦</div></div>
+                <div class="member-slot"><div class="member-name">决绝</div></div>
+                <div class="member-slot"><div class="member-name">事与愿违</div></div>
+                <div class="member-slot"><div class="member-name">谎言</div></div>
+                <div class="member-slot"><div class="member-name">许黎</div></div>
+                <div class="member-slot"><div class="member-name">林静</div></div>
+                <div class="member-slot"><div class="member-name">薇薇安</div></div>
+                <div class="member-slot"><div class="member-name">刺痛</div></div>
+                <div class="member-slot"><div class="member-name">小鑫</div></div>
+                <div class="member-slot"><div class="member-name">通透</div></div>
+                <div class="member-slot"><div class="member-name">天性</div></div>
+                <div class="member-slot"><div class="member-name">稚子</div></div>
+                <div class="member-slot"><div class="member-name">游</div></div>
+                <div class="member-slot"><div class="member-name">美式</div></div>
+                <div class="member-slot"><div class="member-name">小晴</div></div>
+                <div class="member-slot"><div class="member-name">叶修</div></div>
+                <div class="member-slot"><div class="member-name">关键词</div></div>
+                <div class="member-slot"><div class="member-name">呆呆破</div></div>
+                <div class="member-slot"><div class="member-name">简</div></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>明星房个人实力榜 · 数据实时更新 · 如门科技工作室</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">榜单说明</a>
+                <a href="#" class="footer-link">数据来源互联网</a>
+                <a href="#" class="footer-link">官方快手号lyxbsjhl</a>
+                <a href="#" class="footer-link">分享</a>
+                <a href="#" class="footer-link">感谢您的支持</a>
+                <a href="#" class="footer-link">如门科技官方q2894618018</a>
+            </div>
         </div>
     </div>
-
-    <div class="container dashboard" id="admin-dashboard" style="display: none;">
-        <h2>管理员控制面板</h2>
-        <div class="tab-container">
-            <div class="tab active" onclick="switchAdminTab('salary-tab')">工资管理</div>
-            <div class="tab" onclick="switchAdminTab('registration-tab')">注册审批</div>
-        </div>
-        
-        <div id="salary-tab" class="tab-content active">
-            <div class="employee-search">
-                <h3>员工搜索</h3>
-                <div class="form-group">
-                    <label for="employee-username">员工账号</label>
-                    <input type="text" id="employee-username" placeholder="请输入员工账号">
-                </div>
-                <button onclick="searchEmployee()">搜索员工</button>
-                <div id="search-error" class="error"></div>
-            </div>
-            <div class="current-employee" id="current-employee">
-                <h4>当前编辑员工: <span id="current-employee-name">未选择</span></h4>
-            </div>
-            <h3>工资设置</h3>
-            <div class="form-group">
-                <label for="salary-amount">本月工资数量 (元)</label>
-                <input type="number" id="salary-amount" min="0" step="0.01">
-            </div>
-            <div class="form-group">
-                <label for="salary-date">发放日期</label>
-                <input type="date" id="salary-date">
-            </div>
-            <div class="form-group">
-                <label for="deduction-amount">扣工资数量 (元)</label>
-                <input type="number" id="deduction-amount" min="0" step="0.01">
-            </div>
-            <button onclick="saveSalarySettings()">保存设置</button>
-            <div id="save-message" class="success"></div>
-        </div>
-        
-        <div id="registration-tab" class="tab-content">
-            <h3>注册申请审批</h3>
-            <div id="registration-requests" class="registration-requests">
-                <!-- 注册申请将在这里动态生成 -->
-            </div>
-        </div>
-        
-        <button class="logout" onclick="logout()">退出登录</button>
-    </div>
-
-    <div class="container dashboard" id="employee-dashboard" style="display: none;">
-        <h2>员工工资信息</h2>
-        <div class="info-item">
-            <span>本月工资数量:</span> <span id="emp-salary-amount">0</span> 元
-        </div>
-        <div class="info-item">
-            <span>发放日期:</span> <span id="emp-salary-date">未设置</span>
-        </div>
-        <div class="info-item">
-            <span>扣工资数量:</span> <span id="emp-deduction-amount">0</span> 元
-        </div>
-        <div class="info-item">
-            <span>实际发放工资:</span> <span id="emp-net-salary">0</span> 元
-        </div>
-        <button class="logout" onclick="logout()">退出登录</button>
-    </div>
-
+    
     <script>
-        // 存储所有员工的工资设置
-        let allSalarySettings = {};
-        // 存储所有员工账号密码
-        let allUsers = {
-            'lyx': 'lyx8871599',
-            'ljt': 'ljt090814'
-        };
-        // 存储注册申请
-        let registrationRequests = [];
-        // 当前编辑的员工账号
-        let currentEmployee = '';
-        // 当前登录的用户
-        let currentUser = '';
-
-        // 切换登录/注册标签
-        function switchTab(tabId) {
-            // 隐藏所有标签内容
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
             });
-            // 移除所有标签的激活状态
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // 悬停效果
+        document.querySelectorAll('.member-slot').forEach(slot => {
+            slot.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+                this.style.boxShadow = '0 5px 15px rgba(0, 249, 255, 0.3)';
             });
-            // 显示选中的标签内容
-            document.getElementById(tabId).classList.add('active');
-            // 激活选中的标签
-            event.target.classList.add('active');
-        }
-
-        // 切换管理员标签
-        function switchAdminTab(tabId) {
-            // 隐藏所有标签内容
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
+            
+            slot.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
             });
-            // 移除所有标签的激活状态
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // 显示选中的标签内容
-            document.getElementById(tabId).classList.add('active');
-            // 激活选中的标签
-            event.target.classList.add('active');
-            
-            // 如果切换到注册审批标签，加载注册申请
-            if (tabId === 'registration-tab') {
-                loadRegistrationRequests();
-            }
-        }
-
-        // 登录功能
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('login-error');
-
-            // 验证管理员账号
-            if (username === 'lyx' && password === 'lyx8871599') {
-                errorDiv.textContent = '';
-                currentUser = username;
-                showAdminDashboard();
-            }
-            // 验证员工账号
-            else if (allUsers[username] && allUsers[username] === password) {
-                errorDiv.textContent = '';
-                currentUser = username;
-                showEmployeeDashboard();
-            }
-            else {
-                errorDiv.textContent = '用户名或密码错误';
-            }
-        }
-
-            // 验证输入
-            if (!username || !password) {
-                errorDiv.textContent = '用户名和密码不能为空';
-                messageDiv.textContent = '';
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                errorDiv.textContent = '两次输入的密码不一致';
-                messageDiv.textContent = '';
-                return;
-            }
-
-            if (allUsers[username]) {
-                errorDiv.textContent = '该用户名已存在';
-                messageDiv.textContent = '';
-                return;
-            }
-
-            // 检查是否已存在待审批的申请
-            if (registrationRequests.some(request => request.username === username)) {
-                errorDiv.textContent = '该用户名的注册申请正在审批中';
-                messageDiv.textContent = '';
-                return;
-            }
-
-            // 保存注册申请
-            registrationRequests.push({
-                username: username,
-                password: password,
-                status: 'pending'
-            });
-
-            localStorage.setItem('registrationRequests', JSON.stringify(registrationRequests));
-
-            // 显示成功消息
-            errorDiv.textContent = '';
-            messageDiv.textContent = '注册申请已提交，请等待管理员审批';
-
-            // 清空表单
-            document.getElementById('register-username').value = '';
-            document.getElementById('register-password').value = '';
-            document.getElementById('register-confirm-password').value = '';
-
-            // 2秒后清空消息
-            setTimeout(() => {
-                messageDiv.textContent = '';
-            }, 2000);
-        }
-
-        // 显示管理员控制面板
-        function showAdminDashboard() {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('admin-dashboard').style.display = 'block';
-            document.getElementById('current-employee-name').textContent = '未选择';
-            document.getElementById('employee-username').value = '';
-            document.getElementById('salary-amount').value = '';
-            document.getElementById('salary-date').value = '';
-            document.getElementById('deduction-amount').value = '';
-            
-            // 加载所有员工的工资设置
-            loadAllSalarySettings();
-            // 加载所有用户
-            loadAllUsers();
-            // 加载注册申请
-            loadRegistrationRequests();
-        }
-
-        // 显示员工控制面板
-        function showEmployeeDashboard() {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('employee-dashboard').style.display = 'block';
-            
-            // 加载并显示当前员工的工资信息
-            loadEmployeeSalaryInfo();
-        }
-
-        // 加载所有员工的工资设置
-        function loadAllSalarySettings() {
-            const savedSettings = localStorage.getItem('allSalarySettings');
-            if (savedSettings) {
-                allSalarySettings = JSON.parse(savedSettings);
-            }
-        }
-
-        // 加载所有用户
-        function loadAllUsers() {
-            const savedUsers = localStorage.getItem('allUsers');
-            if (savedUsers) {
-                allUsers = JSON.parse(savedUsers);
-            } else {
-                // 初始化默认用户
-                allUsers = {
-                    'lyx': 'lyx8871599',
-                    'ljt': 'ljt090814'
-                };
-                localStorage.setItem('allUsers', JSON.stringify(allUsers));
-            }
-        }
-
-        // 加载注册申请
-        function loadRegistrationRequests() {
-            const savedRequests = localStorage.getItem('registrationRequests');
-            if (savedRequests) {
-                registrationRequests = JSON.parse(savedRequests);
-            }
-            
-            // 显示注册申请
-            displayRegistrationRequests();
-        }
-
-        // 显示注册申请
-        function displayRegistrationRequests() {
-            const container = document.getElementById('registration-requests');
-            container.innerHTML = '';
-
-            if (registrationRequests.length === 0) {
-                container.innerHTML = '<p>暂无注册申请</p>';
-                return;
-            }
-
-            // 过滤出待审批的申请
-            const pendingRequests = registrationRequests.filter(request => request.status === 'pending');
-
-            if (pendingRequests.length === 0) {
-                container.innerHTML = '<p>暂无待审批的注册申请</p>';
-                return;
-            }
-
-            pendingRequests.forEach(request => {
-                const requestItem = document.createElement('div');
-                requestItem.className = 'request-item';
-                requestItem.innerHTML = `
-                    <p><span>用户名:</span> ${request.username}</p>
-                    <div class="request-actions">
-                        <button class="approve-btn" onclick="approveRegistration('${request.username}')">同意</button>
-                        <button class="reject-btn" onclick="rejectRegistration('${request.username}')">拒绝</button>
-                    </div>
-                `;
-                container.appendChild(requestItem);
-            });
-        }
-
-        // 同意注册申请
-        function approveRegistration(username) {
-            // 找到申请
-            const requestIndex = registrationRequests.findIndex(request => request.username === username);
-            if (requestIndex === -1) return;
-
-            // 更新申请状态
-            registrationRequests[requestIndex].status = 'approved';
-
-            // 添加到用户列表
-            allUsers[username] = registrationRequests[requestIndex].password;
-
-            // 保存到本地存储
-            localStorage.setItem('registrationRequests', JSON.stringify(registrationRequests));
-            localStorage.setItem('allUsers', JSON.stringify(allUsers));
-
-            // 重新加载注册申请
-            loadRegistrationRequests();
-        }
-
-        // 拒绝注册申请
-        function rejectRegistration(username) {
-            // 找到申请
-            const requestIndex = registrationRequests.findIndex(request => request.username === username);
-            if (requestIndex === -1) return;
-
-            // 更新申请状态
-            registrationRequests[requestIndex].status = 'rejected';
-
-            // 保存到本地存储
-            localStorage.setItem('registrationRequests', JSON.stringify(registrationRequests));
-
-            // 重新加载注册申请
-            loadRegistrationRequests();
-        }
-
-        // 搜索员工
-        function searchEmployee() {
-            const employeeUsername = document.getElementById('employee-username').value;
-            const errorDiv = document.getElementById('search-error');
-            
-            if (!employeeUsername) {
-                errorDiv.textContent = '请输入员工账号';
-                return;
-            }
-            
-            // 检查员工是否存在
-            if (!allUsers[employeeUsername] && employeeUsername !== 'lyx') {
-                errorDiv.textContent = '该员工不存在';
-                return;
-            }
-            
-            currentEmployee = employeeUsername;
-            document.getElementById('current-employee-name').textContent = currentEmployee;
-            errorDiv.textContent = '';
-            
-            // 加载该员工的工资设置
-            loadEmployeeSettings(currentEmployee);
-        }
-
-        // 加载指定员工的工资设置
-        function loadEmployeeSettings(employeeUsername) {
-            loadAllSalarySettings();
-            
-            const employeeSettings = allSalarySettings[employeeUsername] || {
-                amount: 0,
-                date: '',
-                deduction: 0
-            };
-            
-            document.getElementById('salary-amount').value = employeeSettings.amount;
-            document.getElementById('salary-date').value = employeeSettings.date;
-            document.getElementById('deduction-amount').value = employeeSettings.deduction;
-        }
-
-        // 保存工资设置
-        function saveSalarySettings() {
-            if (!currentEmployee) {
-                const messageDiv = document.getElementById('save-message');
-                messageDiv.textContent = '请先搜索员工';
-                setTimeout(() => {
-                    messageDiv.textContent = '';
-                }, 2000);
-                return;
-            }
-            
-            loadAllSalarySettings();
-            
-            allSalarySettings[currentEmployee] = {
-                amount: parseFloat(document.getElementById('salary-amount').value) || 0,
-                date: document.getElementById('salary-date').value,
-                deduction: parseFloat(document.getElementById('deduction-amount').value) || 0
-            };
-            
-            localStorage.setItem('allSalarySettings', JSON.stringify(allSalarySettings));
-            
-            const messageDiv = document.getElementById('save-message');
-            messageDiv.textContent = '设置保存成功！';
-            setTimeout(() => {
-                messageDiv.textContent = '';
-            }, 2000);
-        }
-
-        // 加载员工工资信息
-        function loadEmployeeSalaryInfo() {
-            loadAllSalarySettings();
-            
-            const employeeSettings = allSalarySettings[currentUser] || {
-                amount: 0,
-                date: '',
-                deduction: 0
-            };
-            
-            document.getElementById('emp-salary-amount').textContent = employeeSettings.amount;
-            document.getElementById('emp-salary-date').textContent = employeeSettings.date || '未设置';
-            document.getElementById('emp-deduction-amount').textContent = employeeSettings.deduction;
-            document.getElementById('emp-net-salary').textContent = (employeeSettings.amount - employeeSettings.deduction).toFixed(2);
-        }
-
-        // 退出登录
-        function logout() {
-            document.getElementById('admin-dashboard').style.display = 'none';
-            document.getElementById('employee-dashboard').style.display = 'none';
-            document.getElementById('login-container').style.display = 'block';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('login-error').textContent = '';
-            currentUser = '';
-            currentEmployee = '';
-        }
-
-        // 初始化时检查本地存储
-        window.onload = function() {
-            // 加载所有用户
-            loadAllUsers();
-            // 加载所有员工的工资设置
-            loadAllSalarySettings();
-            // 加载注册申请
-            loadRegistrationRequests();
-        };
+        });
     </script>
 </body>
-
 </html>
